@@ -401,7 +401,7 @@ function setup_scalar_netcdf(
     defVar(
         ds,
         "time",
-        Float64,
+        Float,
         ("time",);
         attrib = ["units" => time_units, "calendar" => calendar],
     )
@@ -457,10 +457,10 @@ function set_extradim_netcdf(
     extra_dim::NamedTuple{
         (:name, :value),
         Tuple{String, Vector{T}},
-    } where {T <: Union{String, Float64}},
+    } where {T <: Union{String, Float}},
 )
     # the axis attribute `Z` is required to import this type of 3D data by Delft-FEWS the
-    # values of this dimension `extra_dim.value` should be of type Float64
+    # values of this dimension `extra_dim.value` should be of type Float
     if extra_dim.name == "layer"
         attributes =
             ["long_name" => "layer_index", "standard_name" => "layer_index", "axis" => "Z"]
@@ -545,7 +545,7 @@ function setup_grid_netcdf(
     defVar(
         ds,
         "time",
-        Float64,
+        Float,
         ("time",);
         attrib = ["units" => time_units, "calendar" => calendar],
         deflatelevel = deflatelevel,
@@ -1282,8 +1282,8 @@ function reducer(col, rev_inds, x_nc, y_nc, config, dataset, fileformat)
             error("unknown index used")
         end
     elseif haskey(col, "coordinate")
-        x = col["coordinate"]["x"]::Float64
-        y = col["coordinate"]["y"]::Float64
+        x = col["coordinate"]["x"]::Float
+        y = col["coordinate"]["y"]::Float
         # find the closest cell center index
         _, iy = findmin(abs.(y_nc .- y))
         _, ix = findmin(abs.(x_nc .- x))
@@ -1581,14 +1581,14 @@ end
 """
     read_x_axis(ds::CFDataset)
 
-Return the x coordinate Vector{Float64}, whether it is called x, lon or longitude.
+Return the x coordinate Vector{Float}, whether it is called x, lon or longitude.
 Also sorts the vector to be increasing, to match `read_standardized`.
 """
-function read_x_axis(ds::CFDataset)::Vector{Float64}
+function read_x_axis(ds::CFDataset)::Vector{Float}
     candidates = ("x", "lon", "longitude")
     for candidate in candidates
         if haskey(ds.dim, candidate)
-            return sort!(Float64.(ds[candidate][:]))
+            return sort!(Float.(ds[candidate][:]))
         end
     end
     return error("no x axis found in $(path(ds))")
@@ -1597,14 +1597,14 @@ end
 """
     read_y_axis(ds::CFDataset)
 
-Return the y coordinate Vector{Float64}, whether it is called y, lat or latitude.
+Return the y coordinate Vector{Float}, whether it is called y, lat or latitude.
 Also sorts the vector to be increasing, to match `read_standardized`.
 """
-function read_y_axis(ds::CFDataset)::Vector{Float64}
+function read_y_axis(ds::CFDataset)::Vector{Float}
     candidates = ("y", "lat", "latitude")
     for candidate in candidates
         if haskey(ds.dim, candidate)
-            return sort!(Float64.(ds[candidate][:]))
+            return sort!(Float.(ds[candidate][:]))
         end
     end
     return error("no y axis found in $(path(ds))")

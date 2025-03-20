@@ -78,7 +78,7 @@ function initialize_sbm_model(config::Config)
     pits = zeros(Bool, modelsize_2d)
     if do_reservoirs
         reservoirs, resindex, reservoir, pits =
-            initialize_simple_reservoir(config, nc, inds_riv, nriv, pits, tosecond(dt))
+            initialize_simple_reservoir(config, nc, inds_riv, nriv, pits, Float(tosecond(dt)))
     else
         reservoir = ()
         reservoirs = nothing
@@ -88,7 +88,7 @@ function initialize_sbm_model(config::Config)
     # lakes
     if do_lakes
         lakes, lakeindex, lake, pits =
-            initialize_lake(config, nc, inds_riv, nriv, pits, tosecond(dt))
+            initialize_lake(config, nc, inds_riv, nriv, pits, Float(tosecond(dt)))
     else
         lake = ()
         lakes = nothing
@@ -325,7 +325,7 @@ function initialize_sbm_model(config::Config)
         x_nc,
         y_nc,
         nc;
-        extra_dim = (name = "layer", value = Float64.(1:(sbm.maxlayers))),
+        extra_dim = (name = "layer", value = Float.(1:(sbm.maxlayers))),
     )
     close(nc)
 
@@ -523,7 +523,7 @@ function update_after_subsurfaceflow(
         lateral.subsurface.exfiltwater * 1000.0,
     )
 
-    ssf_toriver = lateral.subsurface.to_river ./ tosecond(basetimestep)
+    ssf_toriver = lateral.subsurface.to_river ./ Float(tosecond(basetimestep))
     @timeit to "UASSF/surface_routing" surface_routing(model; ssf_toriver = ssf_toriver)
 
     return model

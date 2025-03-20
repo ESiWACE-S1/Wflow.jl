@@ -407,7 +407,7 @@ Determines the surface flow width. Input `dw` (drainage width), `riverwidth` and
 (boolean). Output is surface flow width `sw`.
 """
 function det_surfacewidth(dw, riverwidth, river)
-    sw = river ? max(dw - riverwidth, 0.0) : dw
+    sw = river ? max(dw - riverwidth, Float(0.0)) : dw
     return sw
 end
 
@@ -447,7 +447,7 @@ Determine ratio `frac` between `slope` river cell `index_river` and `slope` of e
 neighbor (based on directed acyclic graph `graph`).
 """
 function fraction_runoff_toriver(graph, ldd, index_river, slope, n)
-    frac = zeros(n)
+    frac = zeros(Float,n)
     for i in index_river
         nbs = inneighbors(graph, i)
         for j in nbs

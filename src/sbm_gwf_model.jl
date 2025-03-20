@@ -82,7 +82,7 @@ function initialize_sbm_gwf_model(config::Config)
     pits = zeros(Bool, modelsize_2d)
     if do_reservoirs
         reservoirs, resindex, reservoir, pits =
-            initialize_simple_reservoir(config, nc, inds_riv, nriv, pits, tosecond(dt))
+            initialize_simple_reservoir(config, nc, inds_riv, nriv, pits, Float(tosecond(dt)))
     else
         reservoir = ()
         reservoirs = nothing
@@ -92,7 +92,7 @@ function initialize_sbm_gwf_model(config::Config)
     # lakes
     if do_lakes
         lakes, lakeindex, lake, pits =
-            initialize_lake(config, nc, inds_riv, nriv, pits, tosecond(dt))
+            initialize_lake(config, nc, inds_riv, nriv, pits, Float(tosecond(dt)))
     else
         lake = ()
         lakes = nothing
@@ -406,7 +406,7 @@ function initialize_sbm_gwf_model(config::Config)
         x_nc,
         y_nc,
         nc;
-        extra_dim = (name = "layer", value = Float64.(1:(sbm.maxlayers))),
+        extra_dim = (name = "layer", value = Float.(1:(sbm.maxlayers))),
     )
     close(nc)
 
@@ -566,8 +566,8 @@ function update(model::Model{N, L, V, R, W, T}) where {N, L, V, R, W, T <: SbmGw
     # determine stable time step for groundwater flow
     conductivity_profile =
         get(config.input.lateral.subsurface, "conductivity_profile", "uniform")
-    dt_gw = stable_timestep(aquifer, conductivity_profile) # time step in day (Float64)
-    dt_sbm = (vertical.dt / tosecond(basetimestep)) # vertical.dt is in seconds (Float64)
+    dt_gw = stable_timestep(aquifer, conductivity_profile) # time step in day (Float)
+    dt_sbm = (vertical.dt / Float(tosecond(basetimestep))) # vertical.dt is in seconds (Float)
     if dt_gw < dt_sbm
         @warn(
             "stable time step dt $dt_gw for groundwater flow is smaller than sbm dt $dt_sbm"
@@ -601,7 +601,7 @@ function update(model::Model{N, L, V, R, W, T}) where {N, L, V, R, W, T <: SbmGw
         exfiltwater .* 1000.0,
     )
 
-    ssf_toriver = zeros(vertical.n)
+    ssf_toriver = zeros(Float,vertical.n)
     ssf_toriver[inds_riv] = -lateral.subsurface.river.flux ./ lateral.river.dt
     surface_routing(model; ssf_toriver = ssf_toriver)
 

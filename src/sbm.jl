@@ -316,7 +316,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
             sel = inds,
             defaults = 3.75653,
             type = Float,
-        ) .* (dt / basetimestep)
+        ) .* Float(dt / basetimestep)
     tt = ncread(nc, config, "vertical.tt"; sel = inds, defaults = 0.0, type = Float)
     tti = ncread(nc, config, "vertical.tti"; sel = inds, defaults = 1.0, type = Float)
     ttm = ncread(nc, config, "vertical.ttm"; sel = inds, defaults = 0.0, type = Float)
@@ -329,7 +329,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
             sel = inds,
             defaults = 0.1125,
             type = Float,
-        ) .* (dt / basetimestep)
+        ) .* Float(dt / basetimestep)
     cf_soil =
         ncread(nc, config, "vertical.cf_soil"; sel = inds, defaults = 0.038, type = Float)
     # glacier parameters
@@ -351,7 +351,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
             defaults = 3.0,
             type = Float,
             fill = 0.0,
-        ) .* (dt / basetimestep)
+        ) .* Float(dt / basetimestep)
     g_sifrac =
         ncread(
             nc,
@@ -361,7 +361,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
             defaults = 0.001,
             type = Float,
             fill = 0.0,
-        ) .* (dt / basetimestep)
+        ) .* Float(dt / basetimestep)
     glacierfrac = ncread(
         nc,
         config,
@@ -387,7 +387,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
         ncread(nc, config, "vertical.theta_r"; sel = inds, defaults = 0.01, type = Float)
     kv_0 =
         ncread(nc, config, "vertical.kv_0"; sel = inds, defaults = 3000.0, type = Float) .*
-        (dt / basetimestep)
+        Float(dt / basetimestep)
     f = ncread(nc, config, "vertical.f"; sel = inds, defaults = 0.001, type = Float)
     hb = ncread(nc, config, "vertical.hb"; sel = inds, defaults = -10.0, type = Float)
     h1 = ncread(nc, config, "vertical.h1"; sel = inds, defaults = 0.0, type = Float)
@@ -415,7 +415,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
             sel = inds,
             defaults = 10.0,
             type = Float,
-        ) .* (dt / basetimestep)
+        ) .* Float(dt / basetimestep)
     infiltcapsoil =
         ncread(
             nc,
@@ -424,7 +424,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
             sel = inds,
             defaults = 100.0,
             type = Float,
-        ) .* (dt / basetimestep)
+        ) .* Float(dt / basetimestep)
     maxleakage =
         ncread(
             nc,
@@ -433,7 +433,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
             sel = inds,
             defaults = 0.0,
             type = Float,
-        ) .* (dt / basetimestep)
+        ) .* Float(dt / basetimestep)
 
     c = ncread(
         nc,
@@ -480,7 +480,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
         type = Float,
     )
     # correct rooting depth for soilthickness
-    rootingdepth = @. min(0.99 * soilthickness, rootingdepth)
+    rootingdepth = @. min(Float(0.99) * soilthickness, rootingdepth)
     rootdistpar = ncread(
         nc,
         config,
@@ -512,8 +512,8 @@ function initialize_sbm(nc, config, riverfrac, inds)
 
     theta_e = theta_s .- theta_r
     soilwatercapacity = soilthickness .* theta_e
-    satwaterdepth = 0.85 .* soilwatercapacity # cold state value for satwaterdepth
-    zi = max.(0.0, soilthickness .- satwaterdepth ./ theta_e) # cold state value for zi
+    satwaterdepth = Float(0.85) .* soilwatercapacity # cold state value for satwaterdepth
+    zi = max.(Float(0.0), soilthickness .- satwaterdepth ./ theta_e) # cold state value for zi
 
     # these are filled in the loop below
     # TODO see if we can replace this approach
@@ -646,7 +646,7 @@ function initialize_sbm(nc, config, riverfrac, inds)
     nonpaddy = do_water_demand ? get(config.model.water_demand, "nonpaddy", false) : false
 
     sbm = SBM(;
-        dt = tosecond(dt),
+        dt = Float(tosecond(dt)),
         maxlayers = maxlayers,
         n = n,
         nlayers = nlayers,

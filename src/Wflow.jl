@@ -21,8 +21,11 @@ using Glob
 using Polyester
 using LoopVectorization
 using IfElse
+using TimerOutputs
 
 @metadata get_units "mm dt-1" String
+
+to = TimerOutput()
 
 const BMI = BasicModelInterface
 const Float = Float64
@@ -246,6 +249,8 @@ function run(model::Model; close_files = true)
             cp(src, dst; force = true)
         end
     end
+
+    show(to)
     return model
 end
 

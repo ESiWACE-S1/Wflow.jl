@@ -948,40 +948,44 @@ end
 function update(sw::ShallowWaterRiver{T}, network, doy; update_h = true) where {T}
     @unpack nodes_at_link, links_at_node = network
 
-    if !isnothing(sw.reservoir)
-        sw.reservoir.inflow .= 0.0
-        sw.reservoir.totaloutflow .= 0.0
-        sw.reservoir.actevap .= 0.0
-    end
-    if !isnothing(sw.lake)
-        sw.lake.inflow .= 0.0
-        sw.lake.totaloutflow .= 0.0
-        sw.lake.actevap .= 0.0
-    end
-    if !isnothing(sw.floodplain)
-        sw.floodplain.q_av .= 0.0
-        sw.floodplain.h_av .= 0.0
-    end
-    sw.q_av .= 0.0
-    sw.h_av .= 0.0
+    @timeit to "ShallowWaterRiver" begin
+      if !isnothing(sw.reservoir)
+          sw.reservoir.inflow .= 0.0
+          sw.reservoir.totaloutflow .= 0.0
+          sw.reservoir.actevap .= 0.0
+      end
+      if !isnothing(sw.lake)
+          sw.lake.inflow .= 0.0
+          sw.lake.totaloutflow .= 0.0
+          sw.lake.actevap .= 0.0
+      end
+      if !isnothing(sw.floodplain)
+          sw.floodplain.q_av .= 0.0
+          sw.floodplain.h_av .= 0.0
+      end
+      sw.q_av .= 0.0
+      sw.h_av .= 0.0
 
-    t = T(0.0)
-    while t < sw.dt
-        dt = stable_timestep(sw)
-        if t + dt > sw.dt
-            dt = sw.dt - t
-        end
-        shallowwater_river_update(sw, network, dt, doy, update_h)
-        t = t + dt
-    end
-    sw.q_av ./= sw.dt
-    sw.h_av ./= sw.dt
+      t = T(0.0)
+      while t < sw.dt
+          @timeit to "ShallowWaterRiverStep" begin
+            dt = stable_timestep(sw)
+            if t + dt > sw.dt
+                dt = sw.dt - t
+            end
+            shallowwater_river_update(sw, network, dt, doy, update_h)
+            t = t + dt
+          end
+      end
+      sw.q_av ./= sw.dt
+      sw.h_av ./= sw.dt
 
-    if !isnothing(sw.floodplain)
-        sw.floodplain.q_av ./= sw.dt
-        sw.floodplain.h_av ./= sw.dt
-        sw.q_channel_av .= sw.q_av
-        sw.q_av .= sw.q_channel_av .+ sw.floodplain.q_av
+      if !isnothing(sw.floodplain)
+          sw.floodplain.q_av ./= sw.dt
+          sw.floodplain.h_av ./= sw.dt
+          sw.q_channel_av .= sw.q_av
+          sw.q_av .= sw.q_channel_av .+ sw.floodplain.q_av
+      end
     end
 
     return nothing
@@ -1823,12 +1827,13 @@ function surface_routing(model; ssf_toriver = 0.0)
 
     # run kinematic wave for overland flow
     set_land_inwater(model)
-    update(lateral.land, network.land, network.frac_toriver)
+    @timeit to "kinwave_overland" update(lateral.land, network.land, network.frac_toriver)
 
     # run river flow
-    set_river_inwater(model, ssf_toriver)
-    set_inflow_waterbody(model)
-    return update(lateral.river, network.river, julian_day(clock.time - clock.dt))
+    @timeit to "river_inwater" set_river_inwater(model, ssf_toriver)
+    @timeit to "river_inflow" set_inflow_waterbody(model)
+    @timeit to "river_routing" model = update(lateral.river, network.river, julian_day(clock.time - clock.dt))
+    return model
 end
 
 """

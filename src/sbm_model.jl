@@ -432,28 +432,31 @@ end
 
 "update SBM model for a single timestep"
 function update(model::Model{N, L, V, R, W, T}) where {N, L, V, R, W, T <: SbmModel}
-    @unpack lateral, vertical, network, clock, config = model
-    do_water_demand = haskey(config.model, "water_demand")
-    ksat_profile = get(config.input.vertical, "ksat_profile", "exponential")::String
+    @timeit to "SBMUpdate" begin
+      @unpack lateral, vertical, network, clock, config = model
+      do_water_demand = haskey(config.model, "water_demand")
+      ksat_profile = get(config.input.vertical, "ksat_profile", "exponential")::String
 
-    model = update_until_recharge(model)
-    # exchange of recharge between vertical sbm concept and subsurface flow domain
-    lateral.subsurface.recharge .= vertical.recharge ./ 1000.0
-    if do_water_demand
-        @. lateral.subsurface.recharge -= vertical.allocation.act_groundwater_abst / 1000.0
+      @timeit to "update_until_recharge" model = update_until_recharge(model)
+      # exchange of recharge between vertical sbm concept and subsurface flow domain
+      lateral.subsurface.recharge .= vertical.recharge ./ 1000.0
+      if do_water_demand
+          @. lateral.subsurface.recharge -= vertical.allocation.act_groundwater_abst / 1000.0
+      end
+      lateral.subsurface.recharge .*= lateral.subsurface.dw
+      lateral.subsurface.zi .= vertical.zi ./ 1000.0
+      # update lateral subsurface flow domain (kinematic wave)
+      if (ksat_profile == "layered") || (ksat_profile == "layered_exponential")
+          for i in eachindex(lateral.subsurface.kh)
+              lateral.subsurface.kh[i] =
+                  kh_layered_profile(vertical, lateral.subsurface.khfrac[i], i, ksat_profile)
+          end
+      end
+      @timeit to "update" update(lateral.subsurface, network.land, network.frac_toriver, ksat_profile)
+      @timeit to "update_after_subsurfaceflow(UASSF)" model = update_after_subsurfaceflow(model)
+      model = update_total_water_storage(model)
     end
-    lateral.subsurface.recharge .*= lateral.subsurface.dw
-    lateral.subsurface.zi .= vertical.zi ./ 1000.0
-    # update lateral subsurface flow domain (kinematic wave)
-    if (ksat_profile == "layered") || (ksat_profile == "layered_exponential")
-        for i in eachindex(lateral.subsurface.kh)
-            lateral.subsurface.kh[i] =
-                kh_layered_profile(vertical, lateral.subsurface.khfrac[i], i, ksat_profile)
-        end
-    end
-    update(lateral.subsurface, network.land, network.frac_toriver, ksat_profile)
-    model = update_after_subsurfaceflow(model)
-    return model = update_total_water_storage(model)
+    return model
 end
 
 """
@@ -514,14 +517,14 @@ function update_after_subsurfaceflow(
     @unpack lateral, vertical, network, clock, config = model
 
     # update vertical sbm concept (runoff, ustorelayerdepth and satwaterdepth)
-    update_after_subsurfaceflow(
+    @timeit to "UASSF/update_vertical" update_after_subsurfaceflow(
         vertical,
         lateral.subsurface.zi * 1000.0,
         lateral.subsurface.exfiltwater * 1000.0,
     )
 
     ssf_toriver = lateral.subsurface.to_river ./ tosecond(basetimestep)
-    surface_routing(model; ssf_toriver = ssf_toriver)
+    @timeit to "UASSF/surface_routing" surface_routing(model; ssf_toriver = ssf_toriver)
 
     return model
 end

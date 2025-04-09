@@ -385,7 +385,7 @@ function local_inertial_flow(
     dt,
 )
     slope = (zs1 - zs0) / length
-    pow_R = cbrt(R * R * R * R)
+    pow_R = (R * R * R * R)^(1.0f0 / 3.0f0)
     unit = one(hf)
     q = (
         (q0 - g * A * dt * slope) / (unit + g * dt * mannings_n_sq * abs(q0) / (pow_R * A))
@@ -393,8 +393,8 @@ function local_inertial_flow(
 
     # if froude number > 1.0, limit flow
     fr = ((q / A) / sqrt(g * hf)) * froude_limit
-    q = IfElse.ifelse((abs(fr) > 1.0) * (q > 0.0), sqrt(g * hf) * A, q)
-    q = IfElse.ifelse((abs(fr) > 1.0) * (q < 0.0), -sqrt(g * hf) * A, q)
+    q = Base.ifelse((abs(fr) > 1.0) * (q > 0.0), sqrt(g * hf) * A, q)
+    q = Base.ifelse((abs(fr) > 1.0) * (q < 0.0), -sqrt(g * hf) * A, q)
 
     return q
 end

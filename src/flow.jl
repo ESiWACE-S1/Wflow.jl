@@ -548,6 +548,58 @@ end
     allocation::W | "-"                         # Water allocation
 end
 
+@with_kw struct ShallowWaterRiverGPU{T, I}
+  active_e::I
+  q::T
+  q0::T
+  q_av::T
+  zb::T
+  h::T
+  hf::T
+  a::T
+  r::T
+  zs_src::T
+  zs_dst::T
+  zs_max::T
+  zb_max::T
+  dl::T
+  width::T
+  mannings_n_sq::T
+end
+
+function Adapt.adapt_structure(to, from::ShallowWaterRiverGPU)
+  return ShallowWaterRiverGPU(
+    adapt(to, from.active_e),
+    adapt(to, from.q),
+    adapt(to, from.q0),
+    adapt(to, from.q_av),
+    adapt(to, from.zb),
+    adapt(to, from.h),
+    adapt(to, from.hf),
+    adapt(to, from.a),
+    adapt(to, from.r),
+    adapt(to, from.zs_src),
+    adapt(to, from.zs_dst),
+    adapt(to, from.zs_max),
+    adapt(to, from.zb_max),
+    adapt(to, from.dl),
+    adapt(to, from.width),
+    adapt(to, from.mannings_n_sq),
+  )
+end
+
+@with_kw struct NetworkGPU{T}
+  nal_src::T
+  nal_dst::T
+end
+
+function Adapt.adapt_structure(to, from::NetworkGPU)
+  return NetworkGPU(
+    adapt(to, from.nal_src),
+    adapt(to, from.nal_dst),
+  )
+end
+
 function initialize_shallowwater_river(
     nc,
     config,
@@ -644,6 +696,7 @@ function initialize_shallowwater_river(
 
     # for each link the src and dst node is required
     nodes_at_link = adjacent_nodes_at_link(graph)
+    @info "Type of nodes_at_link: $(typeof(nodes_at_link))"
     _ne = ne(graph)
 
     if floodplain
@@ -743,6 +796,51 @@ function get_inflow_waterbody(sw::ShallowWaterRiver, src_edge)
     return q_in
 end
 
+@inline function inner_sw_river_update(j, sw, network, dt, doy, update_h)
+  i = sw.active_e[j]
+  i_src = network.nal_src[i]
+  i_dst = network.nal_dst[i]
+  sw.zs_src[i] = sw.zb[i_src] + sw.h[i_src]
+  sw.zs_dst[i] = sw.zb[i_dst] + sw.h[i_dst]
+  sw.zs_max[i] = max(sw.zs_src[i], sw.zs_dst[i])
+  sw.hf[i] = (sw.zs_max[i] - sw.zb_max[i])
+
+  sw.a[i] = sw.width[i] * sw.hf[i] # flow area (rectangular channel)
+  sw.r[i] = sw.a[i] / (sw.width[i] + Float32(2.0) * sw.hf[i]) # hydraulic radius (rectangular channel)
+
+  sw.q[i] = 
+      local_inertial_flow(
+          sw.q0[i],
+          sw.zs_src[i],
+          sw.zs_dst[i],
+          sw.hf[i],
+          sw.a[i],
+          sw.r[i],
+          sw.dl[i],
+          sw.mannings_n_sq[i],
+          Float32(9.80665),
+          true,
+          dt,
+      )
+
+  # limit q in case water is not available
+  sw.q[i] = Base.ifelse(sw.h[i_src] <= Float(0.0), min(sw.q[i], Float(0.0)), sw.q[i])
+  sw.q[i] = Base.ifelse(sw.h[i_dst] <= Float(0.0), max(sw.q[i], Float(0.0)), sw.q[i])
+
+  sw.q_av[i] += sw.q[i] * dt
+end
+
+@kernel function sw_river_update(sw::ShallowWaterRiverGPU, network_gpu, dt, doy, update_h)
+  j = @index(Global)
+  @inbounds inner_sw_river_update(j, sw, network_gpu, dt, doy, update_h)
+end
+
+function shallowwater_river_update_gpu(sw::ShallowWaterRiverGPU, network_gpu, dt, doy, update_h)
+  sw.q0 .= sw.q
+  sw_river_update(get_backend(sw.q), 64)(sw, network_gpu, Float32(dt), doy, update_h, ndrange = size(sw.active_e))
+  # Update h, different index range
+end
+
 function shallowwater_river_update(sw::ShallowWaterRiver, network, dt, doy, update_h)
     @unpack nodes_at_link, links_at_node = network
 
@@ -782,8 +880,8 @@ function shallowwater_river_update(sw::ShallowWaterRiver, network, dt, doy, upda
         )
 
         # limit q in case water is not available
-        sw.q[i] = IfElse.ifelse(sw.h[i_src] <= Float(0.0), min(sw.q[i], Float(0.0)), sw.q[i])
-        sw.q[i] = IfElse.ifelse(sw.h[i_dst] <= Float(0.0), max(sw.q[i], Float(0.0)), sw.q[i])
+        sw.q[i] = Base.ifelse(sw.h[i_src] <= Float(0.0), min(sw.q[i], Float(0.0)), sw.q[i])
+        sw.q[i] = Base.ifelse(sw.h[i_dst] <= Float(0.0), max(sw.q[i], Float(0.0)), sw.q[i])
 
         sw.q_av[i] += sw.q[i] * dt
     end
@@ -946,7 +1044,6 @@ function shallowwater_river_update(sw::ShallowWaterRiver, network, dt, doy, upda
 end
 
 function update(sw::ShallowWaterRiver{T}, network, doy; update_h = true) where {T}
-    @unpack nodes_at_link, links_at_node = network
 
     @timeit to "ShallowWaterRiver" begin
       if !isnothing(sw.reservoir)
@@ -966,14 +1063,38 @@ function update(sw::ShallowWaterRiver{T}, network, doy; update_h = true) where {
       sw.q_av .= 0.0
       sw.h_av .= 0.0
 
+      dt_fixed = 0.95 * stable_timestep(sw)
+
+      sw_gpu = ShallowWaterRiverGPU(;
+        active_e = MtlArray(sw.active_e),
+        q = MtlArray(sw.q),
+        q0 = MtlArray(sw.q0),
+        q_av = MtlArray(sw.q_av),
+        zb = MtlArray(sw.zb),
+        h = MtlArray(sw.h),
+        hf = MtlArray(sw.hf),
+        a = MtlArray(sw.a),
+        r = MtlArray(sw.r),
+        zs_src = MtlArray(sw.zs_src),
+        zs_dst = MtlArray(sw.zs_dst),
+        zs_max = MtlArray(sw.zs_max),
+        zb_max = MtlArray(sw.zb_max),
+        dl = MtlArray(sw.dl_at_link),
+        width = MtlArray(sw.width_at_link),
+        mannings_n_sq = MtlArray(sw.mannings_n_sq),
+      )
+
+      net_gpu = NetworkGPU(;
+        nal_src = MtlArray(network.nodes_at_link.src),
+        nal_dst = MtlArray(network.nodes_at_link.dst),
+      )
+
       t = T(0.0)
       while t < sw.dt
           @timeit to "ShallowWaterRiverStep" begin
-            dt = stable_timestep(sw)
-            if t + dt > sw.dt
-                dt = sw.dt - t
-            end
-            shallowwater_river_update(sw, network, dt, doy, update_h)
+            dt = T(min(dt_fixed, sw.dt - t))
+            #shallowwater_river_update(sw, network, dt, doy, update_h)
+            shallowwater_river_update_gpu(sw_gpu, net_gpu, dt, doy, update_h)
             t = t + dt
           end
       end

@@ -22,6 +22,9 @@ using Polyester
 using LoopVectorization
 using IfElse
 using TimerOutputs
+using KernelAbstractions
+using Metal
+using Adapt
 
 @metadata get_units "mm dt-1" String
 

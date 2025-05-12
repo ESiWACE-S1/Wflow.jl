@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Starting with “warm” states – Wflow.jl</title>
+<title>Model structure – Wflow.jl</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -313,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Getting started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../user_guide/index.html" aria-current="page"> 
+    <a class="nav-link" href="../user_guide/index.html"> 
 <span class="menu-text">User guide</span></a>
   </li>  
   <li class="nav-item">
@@ -321,7 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Model documentation</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../developments/index.html"> 
+    <a class="nav-link active" href="../developments/index.html" aria-current="page"> 
 <span class="menu-text">Developments</span></a>
   </li>  
 </ul>
@@ -363,7 +363,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Supported options</a></li><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Starting with “warm” states</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../developments/model_struct.html">Model structure</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -377,84 +377,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">User guide</span></a>
+  <a href="../developments/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Developments</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/required_files.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Required files</span></a>
+  <a href="../changelog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Changelog</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/toml_file.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Simulation settings</span></a>
+  <a href="../developments/guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Developers guide</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true">
- <span class="menu-text">Supported options</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../user_guide/warm_states.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Starting with “warm” states</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../user_guide/model_config.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Different model configurations</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../user_guide/multi_threading.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Multithreading</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true">
- <span class="menu-text">Integrations</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../user_guide/bmi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Basic Model Interface (BMI)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../user_guide/fews.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run from Delft-FEWS</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../user_guide/zmq_server.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run wflow as a ZMQ Server</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Frequently asked questions</span></a>
+  <a href="../developments/model_struct.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Model structure</span></a>
   </div>
 </li>
     </ul>
@@ -469,9 +411,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Supported options</a></li><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Starting with “warm” states</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Starting with “warm” states</h1>
+<h1 class="title">Model structure</h1>
 </div>
 
 
@@ -488,36 +430,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <code>state</code> section in the TOML file provides information on the input file if the model is initialized with a warm state (<code>path_input</code>) and to what file the states are written at the end of the model run (<code>path_output</code>). Please note that the model setting <code>cold_start__flag</code> needs to be set to <code>false</code> in order to initialize the model with states from the file located at <code>path_input</code>. A mapping between external netCDF variable state names and model state variable standard names is required below the <code>[state.variables]</code> section. The model state variable standard names are listed on the left side, and the external netCDF variable state names are listed on the right side. Note that <code>path_input</code> is only required when <code>cold_start__flag</code> is set to false. <code>path_output</code> is optional, an output state file is only written when it is defined. If neither is set, the entire <code>state</code> section can be left out.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[model]</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">cold_start__flag</span> <span class="op">=</span> <span class="cn">false</span> <span class="co"># cold (cold_start__flag = true) or warm state (cold_start__flag = false), default is true</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[state]</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">path_input</span> <span class="op">=</span> <span class="st">"data/instates-moselle.nc"</span>     <span class="co"># Location of the file with the input states</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dt">path_output</span> <span class="op">=</span> <span class="st">"data/outstates-moselle.nc"</span>   <span class="co"># Output location of the states after the model run</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">[state.variables]</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="dt">vegetation_canopy_water__depth</span> <span class="op">=</span> <span class="st">"canopystorage"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="dt">soil_water_sat-zone__depth</span> <span class="op">=</span> <span class="st">"satwaterdepth"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="dt">soil_surface__temperature</span> <span class="op">=</span> <span class="st">"tsoil"</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">soil_layer_water_unsat-zone__depth</span> <span class="op">=</span> <span class="st">"ustorelayerdepth"</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="dt">"snowpack~dry__leq-depth"</span> <span class="op">=</span> <span class="st">"snow"</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="dt">"snowpack~liquid__depth"</span> <span class="op">=</span> <span class="st">"snowwater"</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="dt">river_water__instantaneous_depth</span> <span class="op">=</span> <span class="st">"h_river"</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="dt">river_water__instantaneous_volume_flow_rate</span> <span class="op">=</span> <span class="st">"q_river"</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="dt">floodplain_water__instantaneous_volume_flow_rate</span> <span class="op">=</span> <span class="st">"q_floodplain"</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="dt">floodplain_water__instantaneous_depth</span> <span class="op">=</span> <span class="st">"h_floodplain"</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="dt">reservoir_water__instantaneous_volume</span> <span class="op">=</span> <span class="st">"volume_reservoir"</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="dt">subsurface_water__volume_flow_rate</span>  <span class="op">=</span> <span class="st">"ssf"</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="dt">land_surface_water__instantaneous_volume_flow_rate</span> <span class="op">=</span> <span class="st">"q_land"</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="dt">land_surface_water__instantaneous_depth</span> <span class="op">=</span> <span class="st">"h_land"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Below the Julia composite type that represents all different aspects of a <code>Wflow.Model</code>, such as the domain and shared parameters, routing concepts, land model, clock, model type, configuration and input and output.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Model{R <span class="op">&lt;:</span><span class="dt"> Routing</span>, L <span class="op">&lt;:</span><span class="dt"> AbstractLandModel</span>, T <span class="op">&lt;:</span><span class="dt"> AbstractModelType</span>} <span class="op">&lt;:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>       AbstractModel{T}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    config<span class="op">::</span><span class="dt">Config                  </span><span class="co"># all configuration options</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    domain<span class="op">::</span><span class="dt">Domain                  </span><span class="co"># domain connectivity (network) and shared parameters </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    routing<span class="op">::</span><span class="dt">R                      </span><span class="co"># routing model (horizontal fluxes), moves along network</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    land<span class="op">::</span><span class="dt">L                         </span><span class="co"># land model simulating vertical fluxes, independent of each other</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    clock<span class="op">::</span><span class="dt">Clock                    </span><span class="co"># to keep track of simulation time</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    reader<span class="op">::</span><span class="dt">NCReader                </span><span class="co"># provides the model with dynamic input</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    writer<span class="op">::</span><span class="dt">Writer                  </span><span class="co"># writes model output</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span><span class="op">::</span><span class="dt">T                         </span><span class="co"># model type</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>domain</code> field represents network (including connectivity) information of different modelling domains as the <code>river</code>, <code>land</code>, or <code>subsurface</code> domain and it contains shared model parameters that can be used across different model components. The <code>routing</code> field of the <code>struct Model</code> can contain different routing concepts for river, land and subsurface flow domains. For example, the wflow_sbm model with default configuration contains the kinematic wave routing concept for river, overland and lateral subsurface flow. The <code>land</code> field of the <code>struct Model</code> represents a land model, simulating vertical fluxes, for example soil erosion as part of the <code>sediment</code> model type and snow melt as part of the <code>sbm</code> model type.</p>
 
 
 

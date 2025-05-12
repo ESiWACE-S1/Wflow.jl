@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Starting with “warm” states – Wflow.jl</title>
+<title>Land Sediment model – Wflow.jl</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,41 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -313,11 +278,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Getting started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../user_guide/index.html" aria-current="page"> 
+    <a class="nav-link" href="../user_guide/index.html"> 
 <span class="menu-text">User guide</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../model_docs/index.html"> 
+    <a class="nav-link active" href="../model_docs/index.html" aria-current="page"> 
 <span class="menu-text">Model documentation</span></a>
   </li>  
   <li class="nav-item">
@@ -363,7 +328,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Supported options</a></li><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Starting with “warm” states</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../model_docs/parameters_intro.html">Model parameters and variables</a></li><li class="breadcrumb-item"><a href="../model_docs/parameters_sediment.html">Land Sediment model</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -377,26 +342,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">User guide</span></a>
+  <a href="../model_docs/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/required_files.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Required files</span></a>
+  <a href="../model_docs/model_configurations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model configurations</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/toml_file.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Simulation settings</span></a>
+  <a href="../model_docs/model_settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model settings</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true">
- <span class="menu-text">Supported options</span></a>
+ <span class="menu-text">Land models</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -404,20 +369,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/warm_states.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Starting with “warm” states</span></a>
+  <a href="../model_docs/land/landhydrology_sbm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Land Hydrology SBM</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/model_config.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Different model configurations</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../user_guide/multi_threading.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Multithreading</span></a>
+  <a href="../model_docs/land/sediment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sediment</span></a>
   </div>
 </li>
       </ul>
@@ -425,7 +384,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true">
- <span class="menu-text">Integrations</span></a>
+ <span class="menu-text">Routing concepts</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -433,45 +392,108 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/bmi.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Basic Model Interface (BMI)</span></a>
+  <a href="../model_docs/routing/kinwave.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Kinematic wave</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/fews.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run from Delft-FEWS</span></a>
+  <a href="../model_docs/routing/local-inertial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Local inertial</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/zmq_server.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Run wflow as a ZMQ Server</span></a>
+  <a href="../model_docs/routing/waterbodies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reservoirs and Lakes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model_docs/routing/gwf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Groundwater flow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model_docs/routing/sediment_flux.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sediment flux</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true">
+ <span class="menu-text">Model parameters and variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../user_guide/faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Frequently asked questions</span></a>
+  <a href="../model_docs/parameters_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model_docs/parameters_landhydrology_sbm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Land Hydrology SBM</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model_docs/parameters_sediment.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Land Sediment model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../model_docs/parameters_routing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Routing concepts</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#atmospheric-forcing" id="toc-atmospheric-forcing" class="nav-link active" data-scroll-target="#atmospheric-forcing">Atmospheric forcing</a></li>
+  <li><a href="#hydrological-forcing" id="toc-hydrological-forcing" class="nav-link" data-scroll-target="#hydrological-forcing">Hydrological forcing</a></li>
+  <li><a href="#rainfall-erosion" id="toc-rainfall-erosion" class="nav-link" data-scroll-target="#rainfall-erosion">Rainfall erosion</a>
+  <ul class="collapse">
+  <li><a href="#input" id="toc-input" class="nav-link" data-scroll-target="#input">Input</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">Output</a></li>
+  </ul></li>
+  <li><a href="#overland-flow-erosion" id="toc-overland-flow-erosion" class="nav-link" data-scroll-target="#overland-flow-erosion">Overland flow erosion</a>
+  <ul class="collapse">
+  <li><a href="#input-1" id="toc-input-1" class="nav-link" data-scroll-target="#input-1">Input</a></li>
+  <li><a href="#output-1" id="toc-output-1" class="nav-link" data-scroll-target="#output-1">Output</a></li>
+  </ul></li>
+  <li><a href="#soil-erosion" id="toc-soil-erosion" class="nav-link" data-scroll-target="#soil-erosion">Soil erosion</a>
+  <ul class="collapse">
+  <li><a href="#input-2" id="toc-input-2" class="nav-link" data-scroll-target="#input-2">Input</a></li>
+  <li><a href="#output-2" id="toc-output-2" class="nav-link" data-scroll-target="#output-2">Output</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Supported options</a></li><li class="breadcrumb-item"><a href="../user_guide/warm_states.html">Starting with “warm” states</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../model_docs/parameters_intro.html">Model parameters and variables</a></li><li class="breadcrumb-item"><a href="../model_docs/parameters_sediment.html">Land Sediment model</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Starting with “warm” states</h1>
+<h1 class="title">Land Sediment model</h1>
 </div>
 
 
@@ -488,38 +510,360 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <code>state</code> section in the TOML file provides information on the input file if the model is initialized with a warm state (<code>path_input</code>) and to what file the states are written at the end of the model run (<code>path_output</code>). Please note that the model setting <code>cold_start__flag</code> needs to be set to <code>false</code> in order to initialize the model with states from the file located at <code>path_input</code>. A mapping between external netCDF variable state names and model state variable standard names is required below the <code>[state.variables]</code> section. The model state variable standard names are listed on the left side, and the external netCDF variable state names are listed on the right side. Note that <code>path_input</code> is only required when <code>cold_start__flag</code> is set to false. <code>path_output</code> is optional, an output state file is only written when it is defined. If neither is set, the entire <code>state</code> section can be left out.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[model]</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">cold_start__flag</span> <span class="op">=</span> <span class="cn">false</span> <span class="co"># cold (cold_start__flag = true) or warm state (cold_start__flag = false), default is true</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[state]</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">path_input</span> <span class="op">=</span> <span class="st">"data/instates-moselle.nc"</span>     <span class="co"># Location of the file with the input states</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dt">path_output</span> <span class="op">=</span> <span class="st">"data/outstates-moselle.nc"</span>   <span class="co"># Output location of the states after the model run</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">[state.variables]</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="dt">vegetation_canopy_water__depth</span> <span class="op">=</span> <span class="st">"canopystorage"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="dt">soil_water_sat-zone__depth</span> <span class="op">=</span> <span class="st">"satwaterdepth"</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="dt">soil_surface__temperature</span> <span class="op">=</span> <span class="st">"tsoil"</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">soil_layer_water_unsat-zone__depth</span> <span class="op">=</span> <span class="st">"ustorelayerdepth"</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="dt">"snowpack~dry__leq-depth"</span> <span class="op">=</span> <span class="st">"snow"</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="dt">"snowpack~liquid__depth"</span> <span class="op">=</span> <span class="st">"snowwater"</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="dt">river_water__instantaneous_depth</span> <span class="op">=</span> <span class="st">"h_river"</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="dt">river_water__instantaneous_volume_flow_rate</span> <span class="op">=</span> <span class="st">"q_river"</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="dt">floodplain_water__instantaneous_volume_flow_rate</span> <span class="op">=</span> <span class="st">"q_floodplain"</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="dt">floodplain_water__instantaneous_depth</span> <span class="op">=</span> <span class="st">"h_floodplain"</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="dt">reservoir_water__instantaneous_volume</span> <span class="op">=</span> <span class="st">"volume_reservoir"</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="dt">subsurface_water__volume_flow_rate</span>  <span class="op">=</span> <span class="st">"ssf"</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="dt">land_surface_water__instantaneous_volume_flow_rate</span> <span class="op">=</span> <span class="st">"q_land"</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="dt">land_surface_water__instantaneous_depth</span> <span class="op">=</span> <span class="st">"h_land"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<style>
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+td, th {
+  word-wrap: break-word;
+}
+</style>
+<section id="atmospheric-forcing" class="level2">
+<h2 class="anchored" data-anchor-id="atmospheric-forcing">Atmospheric forcing</h2>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 28%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>atmosphere_water__precipitation_volume_flux</code></td>
+<td>Precipitation</td>
+<td>mm Δt⁻¹</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hydrological-forcing" class="level2">
+<h2 class="anchored" data-anchor-id="hydrological-forcing">Hydrological forcing</h2>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 28%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>river_water__volume_flow_rate</code></td>
+<td>River discharge</td>
+<td>m³ s⁻¹</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><code>river_water__depth</code></td>
+<td>River water depth</td>
+<td>m</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td><code>land_surface_water__volume_flow_rate</code></td>
+<td>Overland flow discharge</td>
+<td>m³ s⁻¹</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><code>land_surface_water__depth</code></td>
+<td>Overland flow water depth</td>
+<td>m</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td><code>vegetation_canopy_water__interception_volume_flux</code></td>
+<td>Rainfall interception by the vegetation</td>
+<td>mm Δt⁻¹</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="rainfall-erosion" class="level2">
+<h2 class="anchored" data-anchor-id="rainfall-erosion">Rainfall erosion</h2>
+<section id="input" class="level3">
+<h3 class="anchored" data-anchor-id="input">Input</h3>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 28%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>soil_erosion__rainfall_soil_detachability_factor</code></td>
+<td>Soil detachability factor</td>
+<td>g J⁻¹</td>
+<td>0.6</td>
+</tr>
+<tr class="even">
+<td><code>soil_erosion__eurosem_exponent</code></td>
+<td>Exponent EUROSEM</td>
+<td>-</td>
+<td>2.0</td>
+</tr>
+<tr class="odd">
+<td><code>vegetation_canopy__height</code></td>
+<td>Canopy height</td>
+<td>m</td>
+<td>0.5</td>
+</tr>
+<tr class="even">
+<td><code>vegetation_canopy__gap_fraction</code></td>
+<td>Canopy gap fraction</td>
+<td>-</td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td><code>soil~compacted__area_fraction</code></td>
+<td>Fraction of the soil that is covered (eg paved, snow, etc)</td>
+<td>-</td>
+<td>0.01</td>
+</tr>
+<tr class="even">
+<td><code>soil_erosion__usle_k_factor</code></td>
+<td>USLE soil erodibility factor</td>
+<td>-</td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td><code>soil_erosion__usle_c_factor</code></td>
+<td>USLE crop management factor</td>
+<td>-</td>
+<td>0.01</td>
+</tr>
+<tr class="even">
+<td><code>soil_erosion__answers_rainfall_factor</code></td>
+<td>Answers rainfall erosion factor</td>
+<td>-</td>
+<td>0.108</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="output" class="level3">
+<h3 class="anchored" data-anchor-id="output">Output</h3>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 42%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>soil_erosion~rainfall__mass_flow_rate</code></td>
+<td>Total soil erosion from rainfall (splash)</td>
+<td>ton Δt⁻¹</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="overland-flow-erosion" class="level2">
+<h2 class="anchored" data-anchor-id="overland-flow-erosion">Overland flow erosion</h2>
+<section id="input-1" class="level3">
+<h3 class="anchored" data-anchor-id="input-1">Input</h3>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 28%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>soil_erosion__answers_overland_flow_factor</code></td>
+<td>Answers overland flow erosion factor</td>
+<td>-</td>
+<td>0.9</td>
+</tr>
+<tr class="even">
+<td><code>soil_erosion__usle_k_factor</code></td>
+<td>USLE soil erodibility factor</td>
+<td>-</td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td><code>soil_erosion__usle_c_factor</code></td>
+<td>USLE crop management factor</td>
+<td>-</td>
+<td>0.01</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="output-1" class="level3">
+<h3 class="anchored" data-anchor-id="output-1">Output</h3>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 42%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>soil_erosion~overland_flow__mass_flow_rate</code></td>
+<td>Total soil erosion from overland flow</td>
+<td>ton Δt⁻¹</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="soil-erosion" class="level2">
+<h2 class="anchored" data-anchor-id="soil-erosion">Soil erosion</h2>
+<section id="input-2" class="level3">
+<h3 class="anchored" data-anchor-id="input-2">Input</h3>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 28%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>soil_clay__mass_fraction</code></td>
+<td>Soil content clay</td>
+<td>-</td>
+<td>0.4</td>
+</tr>
+<tr class="even">
+<td><code>soil_silt__mass_fraction</code></td>
+<td>Soil content silt</td>
+<td>-</td>
+<td>0.3</td>
+</tr>
+<tr class="odd">
+<td><code>soil_sand__mass_fraction</code></td>
+<td>Soil content sand</td>
+<td>-</td>
+<td>0.3</td>
+</tr>
+<tr class="even">
+<td><code>soil_aggregates~small__mass_fraction</code></td>
+<td>Soil content small aggregates</td>
+<td>-</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td><code>soil_aggregates~large__mass_fraction</code></td>
+<td>Soil content large aggregates</td>
+<td>-</td>
+<td>0.0</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="output-2" class="level3">
+<h3 class="anchored" data-anchor-id="output-2">Output</h3>
+<table class="table-striped table-hover caption-top table">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 42%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Standard Name</th>
+<th>Description</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>soil_erosion__mass_flow_rate</code></td>
+<td>Total soil erosion</td>
+<td>ton Δt⁻¹</td>
+</tr>
+<tr class="even">
+<td><code>soil_erosion_clay__mass_flow_rate</code></td>
+<td>Total clay erosion</td>
+<td>ton Δt⁻¹</td>
+</tr>
+<tr class="odd">
+<td><code>soil_erosion_silt__mass_flow_rate</code></td>
+<td>Total silt erosion</td>
+<td>ton Δt⁻¹</td>
+</tr>
+<tr class="even">
+<td><code>soil_erosion_sand__mass_flow_rate</code></td>
+<td>Total sand erosion</td>
+<td>ton Δt⁻¹</td>
+</tr>
+<tr class="odd">
+<td><code>soil_erosion_aggregates~small__mass_flow_rate</code></td>
+<td>Total small aggregates erosion</td>
+<td>ton Δt⁻¹</td>
+</tr>
+<tr class="even">
+<td><code>soil_erosion_aggregates~large__mass_flow_rate</code></td>
+<td>Total large aggregates erosion</td>
+<td>ton Δt⁻¹</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
+</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

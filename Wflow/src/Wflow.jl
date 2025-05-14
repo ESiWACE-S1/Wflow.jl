@@ -52,12 +52,28 @@ using StaticArrays: SVector, pushfirst, setindex
 using Statistics: mean, median, quantile!, quantile
 using TerminalLoggers
 using TOML: TOML
+using Adapt
+using KernelAbstractions
+import AcceleratedKernels as AK
 
 const CFDataset = Union{NCDataset, NCDatasets.MFDataset}
 const CFVariable_MF = Union{NCDatasets.CFVariable, NCDatasets.MFCFVariable}
 const VERSION =
     VersionNumber(TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))["version"])
 const ROUTING_OPTIONS = (("kinematic-wave", "local-inertial"))
+
+const Float = Float32
+const Int = Int32
+# const Float = Float64
+# const Int = Int64
+
+const cpu_backend = KernelAbstractions.CPU()
+
+using AMDGPU
+AMDGPU.device!(AMDGPU.devices()[2])
+
+const gpu_backend = AMDGPU.ROCBackend()
+const backend = gpu_backend
 
 mutable struct Clock{T}
     time::T
@@ -71,7 +87,7 @@ function Clock(config)
     calendar = get(config.time, "calendar", "standard")::String
     starttime = cftime(config.time.starttime, calendar)
     dt = Second(config.time.timestepsecs)
-    return Clock(starttime, 0, dt)
+    return Clock(starttime, Int(0), dt)
 end
 
 function Clock(config, reader)
@@ -105,7 +121,7 @@ function Clock(config, reader)
     end
     starttime = cftime(config.time.starttime, calendar)
 
-    return Clock(starttime, 0, dt)
+    return Clock(starttime, Int(0), dt)
 end
 
 abstract type AbstractModel{T} end

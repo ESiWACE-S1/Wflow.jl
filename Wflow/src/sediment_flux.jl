@@ -58,7 +58,7 @@ function update!(
     model::OverlandFlowSediment,
     erosion_model::SoilErosionModel,
     domain::DomainLand,
-    dt::Float64,
+    dt::Float,
 )
     # Transport capacity
     update_boundary_conditions!(model.transport_capacity, model.hydrological_forcing, :land)
@@ -92,7 +92,7 @@ end
 "Initialize the river sediment transport model"
 function RiverSediment(dataset::NCDataset, config::Config, domain::DomainRiver)
     (; indices) = domain.network
-    n = length(indices)
+    n = Int(length(indices))
     hydrological_forcing = HydrologicalForcing(n)
 
     # Check what transport capacity equation will be used
@@ -141,7 +141,7 @@ function update!(
     model::RiverSediment,
     to_river_model::SedimentToRiverDifferentiationModel,
     domain::DomainRiver,
-    dt::Float64,
+    dt::Float,
 )
     # Transport capacity
     update_boundary_conditions!(

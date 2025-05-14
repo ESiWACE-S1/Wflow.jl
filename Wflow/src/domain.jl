@@ -1,21 +1,21 @@
 "Struct to store (shared) land parameters"
 @with_kw struct LandParameters
     # cell length x direction [m]
-    x_length::Vector{Float64} = Float64[]
+    x_length::Vector{Float} = Float[]
     # cell length y direction [m]
-    y_length::Vector{Float64} = Float64[]
+    y_length::Vector{Float} = Float[]
     # cell area [m²]
-    area::Vector{Float64} = Float64[]
+    area::Vector{Float} = Float[]
     # flow width [m]
-    flow_width::Vector{Float64} = Float64[]
+    flow_width::Vector{Float} = Float[]
     # suface flow width [m]
-    surface_flow_width::Vector{Float64} = Float64[]
+    surface_flow_width::Vector{Float} = Float[]
     # flow length [m]
-    flow_length::Vector{Float64} = Float64[]
+    flow_length::Vector{Float} = Float[]
     # flow fraction to river [-] 
-    flow_fraction_to_river::Vector{Float64} = Float64[]
+    flow_fraction_to_river::Vector{Float} = Float[]
     # slope [-]
-    slope::Vector{Float64} = Float64[]
+    slope::Vector{Float} = Float[]
     # water body (reservoir and lake) location [-]
     waterbody_outlet::Vector{Bool} = Bool[]
     # waterbody coverage [-]
@@ -23,25 +23,25 @@
     # river location [-]
     river_location::Vector{Bool} = Bool[]
     # fraction of river [-]
-    river_fraction = Float64[]
+    river_fraction = Float[]
     # fraction of open water (excluding rivers) [-]
-    water_fraction = Float64[]
+    water_fraction = Float[]
 end
 
 "Struct to store (shared) river parameters"
 @with_kw struct RiverParameters
     # river flow width [m]
-    flow_width::Vector{Float64} = Float64[]
+    flow_width::Vector{Float} = Float[]
     # river flow length [m]
-    flow_length::Vector{Float64} = Float64[]
+    flow_length::Vector{Float} = Float[]
     # slope [-]
-    slope::Vector{Float64} = Float64[]
+    slope::Vector{Float} = Float[]
     # water body (reservoir and lake) location
     waterbody_outlet::Vector{Bool} = Bool[]
     # waterbody coverage [-]
     waterbody_coverage::Vector{Bool} = Bool[]
     # grid cell area [m²]
-    cell_area::Vector{Float64} = Float64[]
+    cell_area::Vector{Float} = Float[]
 end
 
 @kwdef struct DomainLand
@@ -97,14 +97,14 @@ function Domain(
     end
 
     pits = zeros(Bool, network_land.modelsize)
-    nriv = length(network_river.indices)
+    nriv = Int(length(network_river.indices))
     if modelsettings.reservoirs
         network_reservoir, inds_reservoir_map2river =
             NetworkWaterBody(dataset, config, network_river.indices, "reservoir")
         pits[network_reservoir.indices_outlet] .= true
     else
         network_reservoir = NetworkWaterBody()
-        inds_reservoir_map2river = fill(0, nriv)
+        inds_reservoir_map2river = fill(Int(0), nriv)
     end
     @reset network_river.reservoir_indices = inds_reservoir_map2river
 
@@ -114,7 +114,7 @@ function Domain(
         pits[network_lake.indices_outlet] .= true
     else
         network_lake = NetworkWaterBody()
-        inds_lake_map2river = fill(0, nriv)
+        inds_lake_map2river = fill(Int(0), nriv)
     end
     @reset network_river.lake_indices = inds_lake_map2river
 
@@ -235,7 +235,7 @@ function LandParameters(dataset::NCDataset, config::Config, domain::Domain)
 
     water_fraction = get_water_fraction(dataset, config, network, river_fraction)
 
-    land_area = @. (1.0 - river_fraction) * area
+    land_area = @. (Float(1.0) - river_fraction) * area
     surface_flow_width =
         map(get_surface_width, flow_width, flow_length, land_area, river_location)
 
@@ -271,16 +271,16 @@ end
 function RiverParameters(dataset::NCDataset, config::Config, network::NetworkRiver)
     (; indices) = network
     lens = lens_input_parameter(config, "river__length"; optional = false)
-    flow_length = ncread(dataset, config, lens; sel = indices, type = Float64)
+    flow_length = ncread(dataset, config, lens; sel = indices, type = Float)
     minimum(flow_length) > 0 || error("river length must be positive on river cells")
 
     lens = lens_input_parameter(config, "river__width"; optional = false)
-    flow_width = ncread(dataset, config, lens; sel = indices, type = Float64)
+    flow_width = ncread(dataset, config, lens; sel = indices, type = Float)
     minimum(flow_width) > 0 || error("river width must be positive on river cells")
 
     lens = lens_input_parameter(config, "river__slope"; optional = false)
-    slope = ncread(dataset, config, lens; sel = indices, type = Float64)
-    clamp!(slope, 0.00001, Inf)
+    slope = ncread(dataset, config, lens; sel = indices, type = Float)
+    clamp!(slope, Float(0.00001), Float(Inf))
 
     river_parameters = RiverParameters(; flow_width, flow_length, slope)
     return river_parameters
@@ -305,12 +305,12 @@ function get_water_fraction(
     dataset::NCDataset,
     config::Config,
     network::NetworkLand,
-    river_fraction::Vector{Float64},
+    river_fraction::Vector{Float},
 )
     lens = lens_input_parameter(config, "land~water-covered__area_fraction")
     water_fraction =
-        ncread(dataset, config, lens; sel = network.indices, defaults = 0.0, type = Float64)
-    water_fraction = max.(water_fraction .- river_fraction, 0.0)
+        ncread(dataset, config, lens; sel = network.indices, defaults = 0.0, type = Float)
+    water_fraction = max.(water_fraction .- river_fraction, Float(0.0))
     return water_fraction
 end
 
@@ -320,24 +320,24 @@ function get_river_fraction(
     config::Config,
     network::NetworkLand,
     river_location::Vector{Bool},
-    area::Vector{Float64},
+    area::Vector{Float},
 )
     logging = false
     lens = lens_input_parameter(config, "river__width"; optional = false)
-    river_width_2d = ncread(dataset, config, lens; type = Float64, fill = 0, logging)
+    river_width_2d = ncread(dataset, config, lens; type = Float, fill = 0, logging)
     river_width = river_width_2d[network.indices]
 
     lens = lens_input_parameter(config, "river__length"; optional = false)
-    river_length_2d = ncread(dataset, config, lens; type = Float64, fill = 0, logging)
+    river_length_2d = ncread(dataset, config, lens; type = Float, fill = 0, logging)
     river_length = river_length_2d[network.indices]
 
-    n = length(river_location)
+    n = Int(length(river_location))
     river_fraction = fill(MISSING_VALUE, n)
     for i in 1:n
         river_fraction[i] = if river_location[i]
-            min((river_length[i] * river_width[i]) / (area[i]), 1.0)
+            min((river_length[i] * river_width[i]) / (area[i]), Float(1.0))
         else
-            0.0
+            Float(0.0)
         end
     end
     return river_fraction
@@ -358,8 +358,8 @@ end
 "Return land surface slope"
 function get_landsurface_slope(dataset::NCDataset, config::Config, network::NetworkLand)
     lens = lens_input_parameter(config, "land_surface__slope"; optional = false)
-    slope = ncread(dataset, config, lens; sel = network.indices, type = Float64)
-    clamp!(slope, 0.00001, Inf)
+    slope = ncread(dataset, config, lens; sel = network.indices, type = Float)
+    clamp!(slope, Float(0.00001), Float(Inf))
     return slope
 end
 
@@ -380,17 +380,16 @@ function waterbody_mask(
 )
     do_reservoirs = get(config.model, "reservoir__flag", false)::Bool
     do_lakes = get(config.model, "lake__flag", false)::Bool
-    waterbodies = fill(0, length(network.indices))
+    waterbodies = fill(Int(0), length(network.indices))
     if do_reservoirs
         lens = lens_input(config, "reservoir_$(region)__count"; optional = false)
         reservoirs =
-            ncread(dataset, config, lens; sel = network.indices, type = Float64, fill = 0)
+            ncread(dataset, config, lens; sel = network.indices, type = Float, fill = 0)
         waterbodies = waterbodies .+ reservoirs
     end
     if do_lakes
         lens = lens_input(config, "lake_$(region)__count"; optional = false)
-        lakes =
-            ncread(dataset, config, lens; sel = network.indices, type = Float64, fill = 0)
+        lakes = ncread(dataset, config, lens; sel = network.indices, type = Float, fill = 0)
         waterbodies = waterbodies .+ lakes
     end
     waterbodies = Vector{Bool}(waterbodies .> 0)

@@ -59,8 +59,6 @@ function surface_routing!(
         domain,
         dt,
     )
-
     update!(overland_flow, river_flow, domain, julian_day(clock.time - clock.dt), dt)
-
     return nothing
 end

@@ -108,8 +108,7 @@ end
 
 "Update Rutter interception model for a single timestep"
 function update!(model::RutterInterceptionModel, atmospheric_forcing::AtmosphericForcing)
-    (; leaf_area_index, canopygapfraction, cmax, kc) =
-        model.parameters.vegetation_parameter_set
+    (; leaf_area_index, canopygapfraction, cmax, kc) = model.parameters
     (; canopy_potevap, throughfall, interception_rate, stemflow, canopy_storage) =
         model.variables
     (; precipitation, potential_evaporation) = atmospheric_forcing
@@ -140,7 +139,7 @@ function update_canopy_parameters!(model::AbstractInterceptionModel)
         storage_specific_leaf,
         canopygapfraction,
         cmax,
-    ) = model.parameters.vegetation_parameter_set
+    ) = model.parameters
 
     n = length(leaf_area_index)
     threaded_foreach(1:n; basesize = 1000) do i

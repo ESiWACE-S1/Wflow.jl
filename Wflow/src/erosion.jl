@@ -9,7 +9,7 @@ end
 
 "Initialize soil loss model"
 function SoilLoss(dataset::NCDataset, config::Config, indices::Vector{CartesianIndex{2}})
-    n = length(indices)
+    n = Int(length(indices))
 
     atmospheric_forcing = AtmosphericForcing(n)
     hydrological_forcing = HydrologicalForcing(n)
@@ -50,7 +50,7 @@ function SoilLoss(dataset::NCDataset, config::Config, indices::Vector{CartesianI
 end
 
 "Update soil loss model for a single timestep"
-function update!(model::SoilLoss, parameters::LandParameters, dt::Float64)
+function update!(model::SoilLoss, parameters::LandParameters, dt::Float)
     (;
         atmospheric_forcing,
         hydrological_forcing,

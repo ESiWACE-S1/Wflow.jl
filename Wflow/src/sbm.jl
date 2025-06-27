@@ -15,9 +15,9 @@ end
 function LandHydrologySBM(dataset::NCDataset, config::Config, domain::DomainLand)
     (; indices) = domain.network
     dt = Second(config.time.timestepsecs)
-    n = length(indices)
+    n = Int(length(indices))
 
-    atmospheric_forcing = AtmosphericForcing(n)
+    atmospheric_forcing = AtmosphericForcing(Int(n))
     vegetation_parameters = VegetationParameters(dataset, config, indices)
     if dt >= Hour(23)
         interception =
@@ -77,7 +77,7 @@ function update!(
     routing::Routing,
     domain::Domain,
     config::Config,
-    dt::Float64,
+    dt::Float,
 )
     do_water_demand = haskey(config.model, "water_demand")::Bool
     (; parameters) = domain.land

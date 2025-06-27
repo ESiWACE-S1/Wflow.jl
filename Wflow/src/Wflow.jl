@@ -52,12 +52,44 @@ using StaticArrays: SVector, pushfirst, setindex
 using Statistics: mean, median, quantile!, quantile
 using TerminalLoggers
 using TOML: TOML
+using Adapt
+using KernelAbstractions
+import AcceleratedKernels as AK
 
 const CFDataset = Union{NCDataset, NCDatasets.MFDataset}
 const CFVariable_MF = Union{NCDatasets.CFVariable, NCDatasets.MFCFVariable}
 const VERSION =
     VersionNumber(TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))["version"])
 const ROUTING_OPTIONS = (("kinematic-wave", "local-inertial"))
+
+const Float = Float32
+const Int = Int32
+# const Float = Float64
+# const Int = Int64
+
+const cpu_backend = KernelAbstractions.CPU()
+
+using AMDGPU
+
+const gpu_backend = AMDGPU.ROCBackend()
+const backend = gpu_backend
+const BackendArray = ROCArray
+# const backend = cpu_backend
+# const BackendArray = Array
+
+# AMDGPU.device!(AMDGPU.devices()[2])
+
+# Allows creation of an array on the backend, e.g. `array_from_host(ones(Int32, 10))` or `array_from_host(1:10, Int32)`
+#  copied from https://github.com/JuliaGPU/AcceleratedKernels.jl/blob/main/test/runtests.jl#L140 (MIT License)
+function array_from_host(h_arr::AbstractArray, dtype = nothing)
+    d_arr = KernelAbstractions.zeros(
+        backend,
+        isnothing(dtype) ? eltype(h_arr) : dtype,
+        size(h_arr),
+    )
+    copyto!(d_arr, h_arr isa Array ? h_arr : Array(h_arr))      # Allow unmaterialised types, e.g. ranges
+    d_arr
+end
 
 mutable struct Clock{T}
     time::T
@@ -71,7 +103,7 @@ function Clock(config)
     calendar = get(config.time, "calendar", "standard")::String
     starttime = cftime(config.time.starttime, calendar)
     dt = Second(config.time.timestepsecs)
-    return Clock(starttime, 0, dt)
+    return Clock(starttime, Int(0), dt)
 end
 
 function Clock(config, reader)
@@ -105,7 +137,7 @@ function Clock(config, reader)
     end
     starttime = cftime(config.time.starttime, calendar)
 
-    return Clock(starttime, 0, dt)
+    return Clock(starttime, Int(0), dt)
 end
 
 abstract type AbstractModel{T} end
@@ -293,10 +325,14 @@ function run!(model::Model; close_files = true)
     times = range(starttime + dt, endtime; step = dt)
 
     @info "Run information" model_type starttime dt endtime nthreads()
+    run_timestep!(model)
     runstart_time = now()
+
     @progress for (i, time) in enumerate(times)
-        @debug "Starting timestep." time i now()
-        run_timestep!(model)
+        if i != 1
+            @debug "Starting timestep." time i now()
+            run_timestep!(model)
+        end
     end
     @info "Simulation duration: $(canonicalize(now() - runstart_time))"
 

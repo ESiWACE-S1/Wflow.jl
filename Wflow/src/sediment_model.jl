@@ -42,7 +42,7 @@ end
 "update `sediment` model for a single timestep"
 function update!(model::AbstractModel{<:SedimentModel})
     (; routing, land, domain, config, clock) = model
-    dt = tosecond(clock.dt)
+    dt = Float(tosecond(clock.dt))
 
     # Soil erosion
     update!(land, domain.land.parameters, dt)
@@ -67,7 +67,7 @@ function set_states!(model::AbstractModel{<:SedimentModel})
     if cold_start == false
         instate_path = input_path(config, config.state.path_input)
         @info "Set initial conditions from state file `$instate_path`."
-        set_states!(instate_path, model; type = Float64)
+        set_states!(instate_path, model; type = Float)
     else
         @info "Set initial conditions from default values."
     end

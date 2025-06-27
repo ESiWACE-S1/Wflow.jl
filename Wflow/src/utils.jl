@@ -12,7 +12,7 @@ const PCR_DIR = [
     CartesianIndex(1, 1),  # 9
 ]
 
-const MISSING_VALUE = Float64(NaN)
+const MISSING_VALUE = Float(NaN)
 
 # timestep that the parameter units are defined in
 const BASETIMESTEP = Second(Day(1))
@@ -455,11 +455,31 @@ end
 "Faster method for exponentiation"
 pow(x, y) = exp(y * log(x))
 
+"""
+Ragged arrays (Vector of vector with varying lengths) is not gpu-compatible
+this function converts a ragged array into a 2-d matrix, with 0 as padding value.
+
+Can be used in combination with `sum_at`
+"""
+function ragged_to_dense(ragged::Vector{Vector{T}}) where {T <: Any}
+    nrows = length(ragged)
+    ncols = maximum(length.(ragged))
+    dense = zeros(T, nrows, ncols)
+    for i in eachindex(ragged)
+        for j in eachindex(ragged[i])
+            dense[i, j] = ragged[i][j]
+        end
+    end
+    return dense
+end
+
 "Return the sum of the array `A` at indices `inds`"
 function sum_at(A, inds)
     v = zero(eltype(A))
     for i in inds
-        v += A[i]
+        if i != 0
+            v += A[i]
+        end
     end
     return v
 end
@@ -468,7 +488,9 @@ end
 function sum_at(f::Function, inds, T)
     v = zero(T)
     for i in inds
-        v += f(i)
+        if i != 0
+            v += f(i)
+        end
     end
     return v
 end
@@ -527,7 +549,7 @@ end
 """
     tosecond(x::Period)
 
-Convert a Period into a Float64, which represents the number of seconds. Will fail if this
+Convert a Period into a Float, which represents the number of seconds. Will fail if this
 is not well defined, such as for Month.
 
 # Examples
@@ -536,9 +558,9 @@ julia> tosecond(Day(1))
 86400.0
 ```
 """
-tosecond(x::Hour) = Float64(Dates.value(Second(x)))
-tosecond(x::Minute) = Float64(Dates.value(Second(x)))
-tosecond(x::T) where {T <: DatePeriod} = Float64(Dates.value(Second(x)))
+tosecond(x::Hour) = Float(Dates.value(Second(x)))
+tosecond(x::Minute) = Float(Dates.value(Second(x)))
+tosecond(x::T) where {T <: DatePeriod} = Float(Dates.value(Second(x)))
 tosecond(x::T) where {T <: TimePeriod} = x / convert(T, Second(1))
 
 """
@@ -578,7 +600,7 @@ function add_vertex_edge_graph!(graph, pits)
 end
 
 """
-    set_effective_flowwidth!(we_x::Vector{Float64}, we_y::Vector{Float64}, domain::Domain)
+    set_effective_flowwidth!(we_x::Vector{Float}, we_y::Vector{Float}, domain::Domain)
 
 For river cells (D8 flow direction) in a staggered grid the effective flow width at cell
 edges (floodplain) `we_x` in the x-direction and `we_y` in the y-direction is corrected by
@@ -588,11 +610,7 @@ is defined as the edge between node `idx` and the adjacent node (+ CartesianInde
 x and (+ CartesianIndex(0, 1)) for y. For cells that contain a `waterbody_outlet` (reservoir
 or lake), the effective flow width is set to zero.
 """
-function set_effective_flowwidth!(
-    we_x::Vector{Float64},
-    we_y::Vector{Float64},
-    domain::Domain,
-)
+function set_effective_flowwidth!(we_x::Vector{Float}, we_y::Vector{Float}, domain::Domain)
     (; local_drain_direction, indices) = domain.river.network
     (; edge_indices, reverse_indices) = domain.land.network
     (; flow_width, waterbody_outlet) = domain.river.parameters
@@ -659,7 +677,7 @@ end
 function julian_day(time)
     # for all years February 28 is day 59 and March 1 is day 60.
     day = dayofyear(time) - (isleapyear(time) && dayofyear(time) > 60)
-    return day
+    return Int(day)
 end
 
 "Partition indices with at least size `basesize`"
@@ -756,7 +774,7 @@ function kh_layered_profile!(
     (; kh) = subsurface.parameters.kh_profile
     (; khfrac) = subsurface.parameters
 
-    t_factor = (tosecond(BASETIMESTEP) / dt)
+    t_factor = Float(tosecond(BASETIMESTEP) / dt)
     for i in eachindex(kh)
         m = nlayers[i]
 
@@ -792,7 +810,7 @@ function kh_layered_profile!(
     (; n_unsatlayers, zi) = soil.variables
     (; kh) = subsurface.parameters.kh_profile
     (; khfrac) = subsurface.parameters
-    t_factor = (tosecond(BASETIMESTEP) / dt)
+    t_factor = Float(tosecond(BASETIMESTEP) / dt)
 
     for i in eachindex(kh)
         m = nlayers[i]

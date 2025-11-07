@@ -2,7 +2,7 @@
 function flowgraph(ldd::AbstractVector, indices::AbstractVector, PCR_DIR::AbstractVector)
     # prepare a directed graph to be filled
     n = length(indices)
-    graph = DiGraph(n)
+    graph = DiGraph{Int}(n)
 
     # loop over ldd, adding the edge to the downstream node
     for (from_node, from_index) in enumerate(indices)
@@ -397,7 +397,7 @@ function local_inertial_flow(
     dt,
 )
     slope = (zs1 - zs0) / length
-    pow_R = cbrt(R * R * R * R)
+    pow_R = R^(4.0f0 / 3.0f0)
     unit = one(hf)
     q = (
         (q0 - g * A * dt * slope) / (unit + g * dt * mannings_n_sq * abs(q0) / (pow_R * A))
@@ -405,8 +405,8 @@ function local_inertial_flow(
 
     # if froude number > 1.0, limit flow
     fr = ((q / A) / sqrt(g * hf)) * froude_limit
-    q = ifelse((abs(fr) > 1.0) * (q > 0.0), sqrt(g * hf) * A, q)
-    q = ifelse((abs(fr) > 1.0) * (q < 0.0), -sqrt(g * hf) * A, q)
+    q = ifelse((abs(fr) > 1.0f0) * (q > 0.0f0), sqrt(g * hf) * A, q)
+    q = ifelse((abs(fr) > 1.0f0) * (q < 0.0f0), -sqrt(g * hf) * A, q)
 
     return q
 end

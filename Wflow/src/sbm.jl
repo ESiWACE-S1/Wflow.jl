@@ -15,9 +15,9 @@ end
 function LandHydrologySBM(dataset::NCDataset, config::Config, domain::DomainLand)
     (; indices) = domain.network
     dt = Second(config.time.timestepsecs)
-    n = length(indices)
+    n = Int(length(indices))
 
-    atmospheric_forcing = AtmosphericForcing(n)
+    atmospheric_forcing = AtmosphericForcing(Int(n))
     vegetation_parameters = VegetationParameters(dataset, config, indices)
     if dt >= Hour(23)
         interception =
@@ -77,7 +77,7 @@ function update!(
     routing::Routing,
     domain::Domain,
     config::Config,
-    dt::Float64,
+    dt::Float,
 )
     do_water_demand = haskey(config.model, "water_demand")::Bool
     (; parameters) = domain.land
@@ -169,8 +169,7 @@ function update_total_water_storage!(
         interception.variables.canopy_storage .+ get_water_depth(demand.paddy)
 
     # Chunk the data for parallel computing
-    n = length(ustoredepth)
-    threaded_foreach(1:n; basesize = 1000) do i
+    AK.foreachindex(total_storage; scheduler = :polyester, min_elems = 1000) do i
         sub_surface = ustoredepth[i] + satwaterdepth[i]
         lateral = (
             overland_flow.variables.h_av[i] * (1 - river_fraction[i]) * 1000 # convert to mm

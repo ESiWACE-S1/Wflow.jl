@@ -22,7 +22,13 @@ function initialize_subsurface_flow(
     elseif kh_profile_type == "layered" || kh_profile_type == "layered_exponential"
         (; kv_profile) = soil.parameters
         dt = Second(config.time.timestepsecs)
-        initialize_lateral_ssf!(subsurface_flow, soil, parameters, kv_profile, tosecond(dt))
+        initialize_lateral_ssf!(
+            subsurface_flow,
+            soil,
+            parameters,
+            kv_profile,
+            Float(tosecond(dt)),
+        )
     end
     return subsurface_flow
 end
@@ -46,14 +52,14 @@ function initialize_subsurface_flow(
     n_cells = length(indices)
 
     lens = lens_input_parameter(config, "land_surface__elevation"; optional = false)
-    elevation = ncread(dataset, config, lens; sel = indices, type = Float64)
+    elevation = ncread(dataset, config, lens; sel = indices, type = Float)
 
     # unconfined aquifer
     if do_constanthead
         constant_head = ConstantHead(dataset, config, indices)
     else
-        variables = ConstantHeadVariables(; head = Float64[])
-        constant_head = ConstantHead(; variables, index = Int64[])
+        variables = ConstantHeadVariables(; head = Float[])
+        constant_head = ConstantHead(; variables, index = Int[])
     end
 
     connectivity = Connectivity(indices, reverse_indices, x_length, y_length)
@@ -66,7 +72,7 @@ function initialize_subsurface_flow(
     end
 
     bottom = elevation .- soil.parameters.soilthickness ./ 1000.0
-    conductance = zeros(Float64, connectivity.nconnection)
+    conductance = zeros(Float, connectivity.nconnection)
     aquifer = UnconfinedAquifer(
         dataset,
         config,

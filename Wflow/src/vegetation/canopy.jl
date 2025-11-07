@@ -3,15 +3,15 @@ abstract type AbstractInterceptionModel end
 "Struct for storing interception model variables"
 @with_kw struct InterceptionVariables
     # Canopy potential evaporation [mm Δt⁻¹]
-    canopy_potevap::Vector{Float64}
+    canopy_potevap::Vector{Float}
     # Interception loss by evaporation [mm Δt⁻¹]
-    interception_rate::Vector{Float64}
+    interception_rate::Vector{Float}
     # Canopy storage [mm]
-    canopy_storage::Vector{Float64}
+    canopy_storage::Vector{Float}
     # Stemflow [mm Δt⁻¹]
-    stemflow::Vector{Float64}
+    stemflow::Vector{Float}
     # Throughfall [mm Δt⁻¹]
-    throughfall::Vector{Float64}
+    throughfall::Vector{Float}
 end
 
 "Initialize interception model variables"
@@ -19,7 +19,7 @@ function InterceptionVariables(n::Int)
     return InterceptionVariables(;
         canopy_potevap = fill(MISSING_VALUE, n),
         interception_rate = fill(MISSING_VALUE, n),
-        canopy_storage = zeros(n),
+        canopy_storage = zeros(Float, n),
         stemflow = fill(MISSING_VALUE, n),
         throughfall = fill(MISSING_VALUE, n),
     )
@@ -28,7 +28,7 @@ end
 "Struct for storing Gash interception model parameters"
 @with_kw struct GashParameters
     # ratio [-] of wet canopy [mm Δt⁻¹] and the average precipitation intensity [mm Δt⁻¹] on a saturated canopy
-    e_r::Vector{Float64}
+    e_r::Vector{Float}
     vegetation_parameter_set::VegetationParameters
 end
 
@@ -49,8 +49,8 @@ function GashInterceptionModel(
         config,
         "vegetation_canopy_water__mean_evaporation-to-mean_precipitation_ratio",
     )
-    e_r = ncread(dataset, config, lens; sel = indices, defaults = 0.1, type = Float64)
-    n = length(indices)
+    e_r = ncread(dataset, config, lens; sel = indices, defaults = 0.1, type = Float)
+    n = Int(length(indices))
     params =
         GashParameters(; e_r = e_r, vegetation_parameter_set = vegetation_parameter_set)
     vars = InterceptionVariables(n)
@@ -66,10 +66,9 @@ function update!(model::GashInterceptionModel, atmospheric_forcing::AtmosphericF
         model.variables
     (; precipitation, potential_evaporation) = atmospheric_forcing
     e_r = model.parameters.e_r
-    n = length(precipitation)
     if !isnothing(leaf_area_index)
         update_canopy_parameters!(model)
-        threaded_foreach(1:n; basesize = 1000) do i
+        AK.foreachindex(precipitation; scheduler = :polyester, min_elems = 1000) do i
             canopyfraction = 1.0 - canopygapfraction[i]
             ewet = canopyfraction * potential_evaporation[i] * kc[i]
             e_r[i] =
@@ -77,7 +76,7 @@ function update!(model::GashInterceptionModel, atmospheric_forcing::AtmosphericF
                 min(0.25, ewet / max(0.0001, canopyfraction * precipitation[i])) : 0.0
         end
     end
-    threaded_foreach(1:n; basesize = 1000) do i
+    AK.foreachindex(throughfall; scheduler = :polyester, min_elems = 1000) do i
         canopy_potevap[i] = kc[i] * potential_evaporation[i] * (1.0 - canopygapfraction[i])
         throughfall[i], interception_rate[i], stemflow[i], canopy_storage[i] =
             rainfall_interception_gash(
@@ -115,8 +114,7 @@ function update!(model::RutterInterceptionModel, atmospheric_forcing::Atmospheri
     if !isnothing(leaf_area_index)
         update_canopy_parameters!(model)
     end
-    n = length(precipitation)
-    threaded_foreach(1:n; basesize = 1000) do i
+    AK.foreachindex(precipitation; scheduler = :polyester, min_elems = 1000) do i
         canopy_potevap[i] = kc[i] * potential_evaporation[i] * (1.0 - canopygapfraction[i])
         throughfall[i], interception_rate[i], stemflow[i], canopy_storage[i] =
             rainfall_interception_modrut(
@@ -141,8 +139,7 @@ function update_canopy_parameters!(model::AbstractInterceptionModel)
         cmax,
     ) = model.parameters
 
-    n = length(leaf_area_index)
-    threaded_foreach(1:n; basesize = 1000) do i
+    AK.foreachindex(cmax; scheduler = :polyester, min_elems = 1000) do i
         cmax[i] = storage_specific_leaf[i] * leaf_area_index[i] + storage_wood[i]
         canopygapfraction[i] = exp(-kext[i] * leaf_area_index[i])
     end

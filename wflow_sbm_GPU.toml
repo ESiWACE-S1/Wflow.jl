@@ -1,0 +1,144 @@
+casename = "wflow_sbm"
+dir_output = "run_default"
+silent = false
+loglevel = "info"
+path_log = "log.txt"
+
+[time]
+calendar = "proleptic_gregorian"
+starttime = 2010-01-01T00:00:00
+endtime = 2010-01-08T00:00:00
+# endtime = 2010-12-31T00:00:00
+time_units = "days since 1900-01-01 00:00:00"
+timestepsecs = 3600
+
+[state]
+path_input = "instate/instates.nc"
+path_output = "outstate/outstates.nc"
+
+[model]
+type = "sbm"
+masswasting = true
+snow = true
+reinit = true
+reservoirs = true
+lakes = true
+glacier = true
+kin_wave_iteration = true
+kw_river_tstep = 900
+kw_land_tstep = 3600
+soil_layer__thickness = [ 100, 300, 800,]
+river_routing = "local-inertial"
+floodplain_1d = true
+land_routing = "kinematic-wave"
+
+[output]
+path = "output.nc"
+
+[state.variables]
+vegetation_canopy_water__depth = "canopystorage"
+
+soil_water_sat-zone__depth = "satwaterdepth"
+soil_surface__temperature = "tsoil"
+soil_layer_water_unsat-zone__depth = "ustorelayerdepth"
+
+"snowpack~dry__leq-depth" = "snow"
+"snowpack~liquid__depth" = "snowwater"
+
+river_water__instantaneous_depth = "h_river"
+river_water__instantaneous_volume_flow_rate = "q_river"
+
+reservoir_water__instantaneous_volume = "volume_reservoir"
+
+subsurface_water__volume_flow_rate  = "ssf"
+
+land_surface_water__instantaneous_depth = "h_land"
+land_surface_water__instantaneous_volume_flow_rate = "q_land"
+land_surface_water__x_component_of_instantaneous_volume_flow_rate = "qx_land"
+land_surface_water__y_component_of_instantaneous_volume_flow_rate = "qy_land"
+
+
+#### INPUT ####
+
+[input]
+path_forcing = "inmaps/inmaps-era5_*.nc"
+path_static = "staticmaps.nc"
+gauges = "wflow_gauges"
+ldd = "wflow_ldd"
+river_location = "wflow_river"
+subcatchment = "wflow_subcatch"
+gauges_fews = "wflow_gauges_fews"
+gauges_hbv_mainsub = "wflow_gauges_hbv_mainsub"
+sub_fews = "wflow_subcatch_fews"
+sub_hbv_mainsub = "wflow_subcatch_hbv_mainsub"
+sub_hbv_smallsub = "wflow_subcatch_hbv_smallsub"
+
+# these are not directly part of the model
+river_gauge__count = "wflow_gauges_grdc"
+basin__local_drain_direction = "wflow_ldd"
+river_location__mask = "wflow_river"
+reservoir_area__count = "wflow_reservoirareas"
+reservoir_location__count = "wflow_reservoirlocs"
+subbasin_location__count = "wflow_subcatch"
+
+[input.forcing]
+atmosphere_water__precipitation_volume_flux = "precip"
+land_surface_water__potential_evaporation_volume_flux = "pet"
+atmosphere_air__temperature = "temp"
+
+[input.static]
+atmosphere_air__snowfall_temperature_threshold = "TT"
+atmosphere_air__snowfall_temperature_interval = "TTI"
+
+"land~water-covered__area_fraction" = "WaterFrac"
+
+snowpack__melting_temperature_threshold = "TTM"
+snowpack__degree-day_coefficient = "Cfmax"
+
+soil_layer_water__brooks-corey_exponent = "c"
+soil_surface_water__infiltration_reduction_parameter = "cf_soil"
+soil_surface_water__vertical_saturated_hydraulic_conductivity = "KsatVer"
+soil_water__vertical_saturated_hydraulic_conductivity_scale_parameter = "f"
+"soil~compacted_surface_water__infiltration_capacity" = "InfiltCapPath"
+soil_water__residual_volume_fraction = "thetaR"
+soil_water__saturated_volume_fraction = "thetaS"
+soil_water_sat-zone_bottom__max_leakage_volume_flux = "MaxLeakage"
+"soil~compacted__area_fraction" = "PathFrac"
+"soil_root~wet__sigmoid_function_shape_parameter" = "rootdistpar"
+soil__thickness = "SoilThickness"
+
+vegetation_canopy_water__mean_evaporation-to-mean_precipitation_ratio = "EoverR"
+vegetation_canopy__light-extinction_coefficient = "Kext"
+vegetation__specific-leaf_storage = "Sl"
+vegetation_wood_water__storage_capacity = "Swood"
+vegetation_root__depth = "RootingDepth"
+
+river__length = "wflow_riverlength"
+river_water_flow__manning_n_parameter = "N_River"
+river__slope = "RiverSlope"
+river__width = "wflow_riverwidth"
+river_bank_water__depth = "RiverDepth"
+river_bank_water__elevation = "hydrodem_avg"
+
+land_surface_water_flow__manning_n_parameter = "N"
+land_surface_water_flow__ground_elevation = "wflow_dem"
+land_surface__slope = "Slope"
+
+reservoir_surface__area = "ResSimpleArea"
+"reservoir_water_demand~required~downstream__volume_flow_rate" = "ResDemand"
+reservoir_water_release-below-spillway__max_volume_flow_rate = "ResMaxRelease"
+reservoir_water__max_volume = "ResMaxVolume"
+"reservoir_water~full-target__volume_fraction" = "ResTargetFullFrac"
+"reservoir_water~min-target__volume_fraction" = "ResTargetMinFrac"
+
+subsurface_water__horizontal-to-vertical_saturated_hydraulic_conductivity_ratio = "KsatHorFrac"
+
+[input.cyclic]
+vegetation__leaf-area_index = "LAI"
+
+[output.netcdf_grid]
+path = "output_grid.nc"
+
+[output.netcdf_grid.variables]
+river_water__depth = "h_av_river"
+river_water__volume_flow_rate = "q_av_river"
